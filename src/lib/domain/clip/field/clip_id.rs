@@ -1,8 +1,8 @@
-use serde::{Deserialize, Serialize};
 use crate::data::Dbid;
 use derive_more::Constructor;
+use serde::{Deserialize, Serialize};
 
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Constructor, Deserialize, Serialize)]
 pub struct ClipId(Dbid);
 
 impl ClipId {

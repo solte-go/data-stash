@@ -1,14 +1,17 @@
-use std::fmt::Debug;
+pub mod model;
+pub mod query;
+
 use derive_more::{Display, From};
-use serde::{Serialize, Deserialize};
-use uuid::Uuid;
-use std::str::FromStr;
+use serde::{Deserialize, Serialize};
 use sqlx::Sqlite;
+use std::fmt::Debug;
+use std::str::FromStr;
+use uuid::Uuid;
 
 #[derive(Debug, thiserror::Error)]
 pub enum DataError {
     #[error("database error: {0}")]
-    Database(#[from] sqlx::Error)
+    Database(#[from] sqlx::Error),
 }
 
 pub type AppDatabase = Database<Sqlite>;
@@ -38,7 +41,6 @@ impl Database<Sqlite> {
         &self.0
     }
 }
-
 
 #[derive(Clone, Debug, From, Display, Serialize, Deserialize)]
 pub struct Dbid(Uuid);
