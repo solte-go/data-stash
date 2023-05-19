@@ -61,6 +61,12 @@ impl Default for Dbid {
     }
 }
 
+impl From<Dbid> for String {
+    fn from(id: Dbid) -> Self {
+        format!("{}", id.0)
+    }
+}
+
 impl FromStr for Dbid {
     type Err = uuid::Error;
     fn from_str(id: &str) -> Result<Self, Self::Err> {
