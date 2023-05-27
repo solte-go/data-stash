@@ -1,11 +1,14 @@
 use super::super::ClipError;
 use derive_more::From;
 use rocket::request::FromParam;
+use rocket::{UriDisplayPath, UriDisplayQuery};
 use serde::{Deserialize, Serialize};
 use std::fmt::Debug;
 use std::str::FromStr;
 
-#[derive(Debug, Clone, Deserialize, Serialize, From)]
+#[derive(
+    Debug, Clone, Deserialize, Serialize, From, UriDisplayPath, UriDisplayQuery, Eq, Hash, PartialEq,
+)]
 pub struct Shortcode(String);
 
 impl Shortcode {

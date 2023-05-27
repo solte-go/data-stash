@@ -73,3 +73,22 @@ impl FromStr for Dbid {
         Ok(Dbid(Uuid::parse_str(id)?))
     }
 }
+
+#[cfg(test)]
+pub mod test {
+    use crate::data::*;
+    use rocket::http::uri::fmt::Kind::Path;
+    use sqlx::migrate::Migrator;
+    use tokio::runtime::Handle;
+
+    pub fn new_db(handle: &Handle) -> AppDatabase {
+        use std::path::Path;
+        handle.block_on(async move {
+            let db = Database::new(":memory:").await;
+            let migrator = Migrator::new(Path::new("./migrations")).await.unwrap();
+            let pool = db.get_pool();
+            migrator.run(pool).await.unwrap();
+            db
+        })
+    }
+}

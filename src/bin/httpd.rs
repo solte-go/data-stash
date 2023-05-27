@@ -1,4 +1,6 @@
 use clip_ctash::data::AppDatabase;
+use clip_ctash::domain::maintenance::Maintenance;
+use clip_ctash::web::counter::HitCounter;
 use clip_ctash::web::render::Renderer;
 use dotenv::dotenv;
 use rocket::tokio;
@@ -21,15 +23,24 @@ fn main() {
     let rt = tokio::runtime::Runtime::new().expect("failed to spawn tokio runtime");
 
     let handle = rt.handle().clone();
+    let renderer = Renderer::new(opt.template_directory.clone());
+
+    let database = rt.block_on(async move { AppDatabase::new(&opt.connection_string).await });
+
+    let hit_counter = HitCounter::new(database.get_pool().clone(), handle.clone());
+    let maintenance = Maintenance::spawn(database.get_pool().clone(), handle.clone());
+
+    let config = clip_ctash::RocketConfig {
+        renderer,
+        database,
+        hit_counter,
+        maintenance,
+    };
 
     rt.block_on(async move {
-        let renderer = Renderer::new(opt.template_directory);
-        let database = AppDatabase::new(&opt.connection_string).await;
-
-        let config = clip_ctash::RocketConfig { renderer, database };
         clip_ctash::new_rocket(config)
             .launch()
             .await
-            .expect("faild to lunch rocket sertver")
+            .expect("failed to lunch rocket server")
     });
 }

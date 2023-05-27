@@ -23,6 +23,7 @@ pub enum ClipError {
 
 #[derive(Debug, Clone, Deserialize, Serialize)]
 pub struct Clip {
+    #[serde(skip)]
     pub clip_id: field::ClipId,
     pub shortcode: field::Shortcode,
     pub content: field::Content,

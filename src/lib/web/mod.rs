@@ -1,9 +1,15 @@
 use handlebars::RenderError;
 
+pub mod api;
+pub mod counter;
 pub mod ctx;
 pub mod form;
 pub mod http;
 pub mod render;
+
+pub use counter::HitCounter;
+
+pub const PASSWORD_COOKIE: &str = "password";
 
 #[derive(rocket::Responder)]
 enum PageError {
